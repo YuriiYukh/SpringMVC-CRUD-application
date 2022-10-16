@@ -29,13 +29,13 @@ public class PeopleController {
     }
     
     @GetMapping()
-    public String index(Model model) throws DaoException {
+    public String index(Model model) {
         model.addAttribute("people", personDao.index());
         return "people/index";
     }
     
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model) throws DaoException {
+    public String show(@PathVariable("id") int id, Model model) {
         model.addAttribute("person", personDao.show(id));
         return "people/show";
     }
@@ -47,7 +47,7 @@ public class PeopleController {
     }
     
     @PostMapping()
-    public String create(@ModelAttribute("person") @Validated Person person, BindingResult bindingResult) throws DaoException {
+    public String create(@ModelAttribute("person") @Validated Person person, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
@@ -57,7 +57,7 @@ public class PeopleController {
     }
     
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") int id) throws DaoException {
+    public String edit(Model model, @PathVariable("id") int id) {
         model.addAttribute("person", personDao.show(id));
         
         return "people/edit";
@@ -74,7 +74,7 @@ public class PeopleController {
     }
     
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id) throws DaoException {
+    public String delete(@PathVariable("id") int id) {
         personDao.delete(id);
         
         return "redirect:/people";
