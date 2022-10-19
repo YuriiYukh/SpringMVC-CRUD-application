@@ -7,6 +7,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -17,18 +19,20 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import com.github.yuriiyukh.dao.DaoException;
-import com.github.yuriiyukh.reader.PropertiesReader;
 
 @Configuration
 @ComponentScan("com.github.yuriiyukh")
 @EnableWebMvc
+@PropertySource("classpath:db_configuration.properties")
 public class SpringConfig implements WebMvcConfigurer {
     
     private final ApplicationContext applicationContext;
+    private Environment environment;
 
     @Autowired
-    public SpringConfig(ApplicationContext applicationContext) {
+    public SpringConfig(ApplicationContext applicationContext, Environment environment) {
         this.applicationContext = applicationContext;
+        this.environment = environment;
     }
 
     @Bean
@@ -51,11 +55,10 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public DataSource dataSource() throws DaoException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        PropertiesReader propertiesReader = new PropertiesReader("db_configuration.properties");
-        dataSource.setDriverClassName(propertiesReader.readData("driverUrl"));
-        dataSource.setUrl(propertiesReader.readData("dbUrl"));
-        dataSource.setUsername(propertiesReader.readData("dbUsername"));
-        dataSource.setPassword(propertiesReader.readData("dbPassword"));
+        dataSource.setDriverClassName(environment.getProperty("driverUrl"));
+        dataSource.setUrl(environment.getProperty("dbUrl"));
+        dataSource.setUsername(environment.getProperty("dbUsername"));
+        dataSource.setPassword(environment.getProperty("dbPassword"));
         
         return dataSource;
     }
