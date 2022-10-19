@@ -1,8 +1,11 @@
 package com.github.yuriiyukh.controllers.config;
 
+import java.util.Objects;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -55,7 +58,7 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public DataSource dataSource() throws DaoException {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(environment.getProperty("driverUrl"));
+        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driverUrl")));
         dataSource.setUrl(environment.getProperty("dbUrl"));
         dataSource.setUsername(environment.getProperty("dbUsername"));
         dataSource.setPassword(environment.getProperty("dbPassword"));
